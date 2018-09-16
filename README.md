@@ -12,3 +12,22 @@ This is a small tool to build a header file from a C file.
 ```
 ./hgen file.c file.h
 ```
+
+The functions of the C file must follow this convention:
+```
+void name_of_the_function(int param1, int param2) {
+    ...
+}
+```
+
+and not
+
+```
+void name_of_the_function(int param1, int param2)
+{
+    ...
+}
+```
+
+
+
