@@ -86,7 +86,7 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
 // Main function
 int main(int argc, char *argv[]) {
     if (argc != 3) {
-        printf("Bad usage: ./hgen file.c file.h");
+        printf("Bad usage: ./hgen file.c file.h\n");
         exit(1);
     }
 
