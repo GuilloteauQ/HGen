@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <string.h>
+#include <libgen.h>
 
 #include "stack.h"
 
@@ -85,20 +86,33 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
 
 // Main function
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        printf("Bad usage: ./hgen file.c file.h\n");
-        exit(1);
+
+    char* cfile;
+    char* filename;
+    switch (argc) {
+        case 3:
+            cfile = argv[1];
+            filename = argv[2];
+            break;
+        case 2:
+            cfile = argv[1];
+            filename = malloc((strlen(cfile) + 1) * sizeof(char));
+            strcpy(filename, cfile);
+            filename[strlen(cfile) - 1] = 'h';
+            filename[strlen(cfile)] = '\0';
+            break;
+        default:
+            printf("Bad usage: ./hgen file.c file.h\n");
+            exit(1);
+            break;
     }
 
+
     // Getting the name of the .h file
-    char* cfile = argv[1];
-    char* filename = argv[2];
-
     FILE *outfile = fopen(filename, "w");
-
     // Writing the full header of the .h file
-    write_header(outfile, filename, "#ifndef _");
-    write_header(outfile, filename, "#define _");
+    write_header(outfile, basename(filename), "#ifndef _");
+    write_header(outfile, basename(filename), "#define _");
 
     // Defining the empty stack
     struct stack *stack = NULL;
@@ -111,6 +125,10 @@ int main(int argc, char *argv[]) {
     write_footer(outfile);
 
     fclose(outfile);
+
+    if (argc == 2) {
+        free(filename);
+    }
 
     return 0;
 }
