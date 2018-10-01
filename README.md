@@ -52,6 +52,7 @@ struct btree {
     struct btree* right;
 }; */
 ```
+(it will actually copy everything between the ```/* #[struct]``` and the ```};*/``` lines.)
 
 Result in the .h file:
 ```C
