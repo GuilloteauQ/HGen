@@ -45,11 +45,10 @@ void copy_struct(FILE* infile, FILE *outfile) {
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
-    
     while ((read = getline(&line, &len, infile)) != -1) {
         if (!strcmp(line, "}; */\n") || !strcmp(line, "};*/\n")) {
             // If we are at the end of the structure
-            fprintf(outfile, "}; \n\n");
+            fprintf(outfile, "};\n\n");
             break;
         } else {
             fprintf(outfile, "%s", line);
@@ -93,7 +92,6 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
             // If the line is not a comment
             if (line[i] != '/')
                 read_line(line, &stack, i);
-            
             // If this is a function's name
             if (previous_length == 0 && length(stack) == 1) {
                 int j = 0;
