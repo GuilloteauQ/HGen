@@ -54,6 +54,7 @@ void copy_struct(FILE* infile, FILE *outfile) {
             fprintf(outfile, "%s", line);
         }
     }
+    free(line);
 }
 
 
