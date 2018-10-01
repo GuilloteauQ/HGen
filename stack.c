@@ -4,10 +4,11 @@
 #include <stdlib.h>
 #include <assert.h>
 
+/* [raw]
 struct stack {
     bool val; // true if ,{ false if }
     struct stack *next;
-};
+};*/
 
 
 // Returns a new stack with the value

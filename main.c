@@ -74,7 +74,7 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
 
     // For all the lines
     while ((read = getline(&line, &len, fp)) != -1) {
-        is_struct = is_struct || !strcmp(line, "/* [struct]\n");
+        is_struct = is_struct || !strcmp(line, "/* [raw]\n");
         if (is_struct) {
             // If we have to copy the struct
             assert (length(stack) == 0);

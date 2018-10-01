@@ -34,20 +34,20 @@ void name_of_the_function(int param1, int param2)
 }
 ```
 
-### Structures
+### Structures and others
 
-If you need to have a structure in your header file, please use the following syntax, so the program will know what to copy in the h file:
+If you need to copy a full structure (or something else), use the following syntax:
 
 In the .c file:
 ```C
-/* [struct]
+/* [raw]
 struct btree {
     int value;
     struct btree* left;
     struct btree* right;
 }; */
 ```
-(it will actually copy everything between the ```/* [struct]``` and the ```};*/``` lines.)
+(it will actually copy everything between the ```/* [raw]``` and the ```};*/``` lines.)
 
 Result in the .h file:
 ```C

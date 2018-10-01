@@ -7,7 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-struct stack ;
+struct stack {
+    bool val; // true if ,{ false if }
+    struct stack *next;
+};
 
 struct stack *new_stack(bool value) ;
 
