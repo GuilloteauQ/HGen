@@ -1,5 +1,5 @@
 
-- [ ] Take care of struct (ie copy paste the entire struct in the .h file)
+- [x] Take care of struct (ie copy paste the entire struct in the .h file)
 
 - [x] Relative paths
 
