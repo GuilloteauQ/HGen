@@ -40,6 +40,24 @@ void read_line(char* line, struct stack **stack, int i) {
     }
 }
 
+// Copies the structure to the h file
+void copy_struct(FILE* infile, FILE *outfile) {
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    
+    while ((read = getline(&line, &len, infile)) != -1) {
+        if (!strcmp(line, "}; */\n") || !strcmp(line, "};*/\n")) {
+            // If we are at the end of the structure
+            fprintf(outfile, "}; \n\n");
+            break;
+        } else {
+            fprintf(outfile, "%s", line);
+        }
+    }
+}
+
+
 // Reads all the lines of the .c file
 void readlines(char* filename, struct stack *stack, FILE *outfile) {
     FILE * fp;
@@ -48,6 +66,7 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
     ssize_t read;
     int i;
     int previous_length = 0;
+    bool is_struct = false;
 
     fp = fopen(filename, "r");
     if (fp == NULL)
@@ -55,27 +74,36 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
 
     // For all the lines
     while ((read = getline(&line, &len, fp)) != -1) {
-        previous_length = length(stack);
-        i = 0;
-        // Consumes spaces and tabs
-        while (line[i] == ' ')
-            i++;
+        is_struct = is_struct || !strcmp(line, "/* #[struct]\n");
+        if (is_struct) {
+            // If we have to copy the struct
+            assert (length(stack) == 0);
+            copy_struct(fp, outfile);
+            is_struct = false;
+        } else {
+            previous_length = length(stack);
+            i = 0;
+            // Consumes spaces and tabs
+            while (line[i] == ' ')
+                i++;
 
-        // If the line is not a comment
-        if (line[i] == '#')
-            fprintf(outfile, "%s", line);
-        if (line[i] != '/')
-            read_line(line, &stack, i);
-
-        // If this is a function's name
-        if (previous_length == 0 && length(stack) == 1) {
-            int j = 0;
-            // Copies all the line but the { and remplaces it with a ;
-            while (line[j] != '{') {
-                fprintf(outfile, "%c", line[j]);
-                j++;
+            // If it's not a header
+            if (line[i] == '#')
+                fprintf(outfile, "%s", line);
+            // If the line is not a comment
+            if (line[i] != '/')
+                read_line(line, &stack, i);
+            
+            // If this is a function's name
+            if (previous_length == 0 && length(stack) == 1) {
+                int j = 0;
+                // Copies all the line but the { and remplaces it with a ;
+                while (line[j] != '{') {
+                    fprintf(outfile, "%c", line[j]);
+                    j++;
+                }
+                fprintf(outfile, ";\n\n");
             }
-            fprintf(outfile, ";\n\n");
         }
     }
 
