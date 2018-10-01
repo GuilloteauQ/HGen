@@ -115,44 +115,38 @@ int main(int argc, char *argv[]) {
 
     char* cfile;
     char* filename;
-    switch (argc) {
-        case 3:
-            cfile = argv[1];
-            filename = argv[2];
-            break;
-        case 2:
-            cfile = argv[1];
-            filename = malloc((strlen(cfile) + 1) * sizeof(char));
-            strcpy(filename, cfile);
-            filename[strlen(cfile) - 1] = 'h';
-            filename[strlen(cfile)] = '\0';
-            break;
-        default:
-            printf("Bad usage: ./hgen file.c file.h\n");
-            exit(1);
-            break;
+    if (argc <= 1) {
+        printf("Bad usage: ./hgen file.c file.h\n");
+        exit(1);
     }
 
+    for (int i = 1; i < argc; i++) {
 
-    // Getting the name of the .h file
-    FILE *outfile = fopen(filename, "w");
-    // Writing the full header of the .h file
-    write_header(outfile, basename(filename), "#ifndef _");
-    write_header(outfile, basename(filename), "#define _");
+        cfile = argv[i];
+        filename = malloc((strlen(cfile) + 1) * sizeof(char));
+        strcpy(filename, cfile);
+        filename[strlen(cfile) - 1] = 'h';
+        filename[strlen(cfile)] = '\0';
 
-    // Defining the empty stack
-    struct stack *stack = NULL;
 
-    // Reading all the lines of the .c file
-    readlines(cfile, stack, outfile);
+        // Getting the name of the .h file
+        FILE *outfile = fopen(filename, "w");
+        // Writing the full header of the .h file
+        write_header(outfile, basename(filename), "#ifndef _");
+        write_header(outfile, basename(filename), "#define _");
 
-    free_stack(stack);
+        // Defining the empty stack
+        struct stack *stack = NULL;
 
-    write_footer(outfile);
+        // Reading all the lines of the .c file
+        readlines(cfile, stack, outfile);
 
-    fclose(outfile);
+        free_stack(stack);
 
-    if (argc == 2) {
+        write_footer(outfile);
+
+        fclose(outfile);
+
         free(filename);
     }
 

@@ -12,15 +12,10 @@ This is a small tool to build a header file from a C file.
 ### Calling
 
 ```
-./hgen file.c
+./hgen file1.c file2.c .. filen.c
 ```
-This will create the header file as ```file.h```
+This will create the header file as ```fileX.h```
 
-If you want to give a diffrent name to the header file:
-
-```
-./hgen file.c header_file.h
-```
 ### Functions
 
 The functions of the C file must follow this convention:
