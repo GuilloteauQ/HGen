@@ -45,14 +45,14 @@ If you need to have a structure in your header file, please use the following sy
 
 In the .c file:
 ```C
-/* #[struct]
+/* [struct]
 struct btree {
     int value;
     struct btree* left;
     struct btree* right;
 }; */
 ```
-(it will actually copy everything between the ```/* #[struct]``` and the ```};*/``` lines.)
+(it will actually copy everything between the ```/* [struct]``` and the ```};*/``` lines.)
 
 Result in the .h file:
 ```C
