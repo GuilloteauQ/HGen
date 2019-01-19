@@ -6,7 +6,12 @@
 #include <string.h>
 #include <libgen.h>
 
-#include "stack.h"
+// Displays an error message if there is an invalid sequence of {} in the input file
+void error_message_brackets() {
+    // There is an invalid sequence of {}
+    fprintf(stderr, ">>> The file comports an invalid sequence of curly brackets\n");
+    exit(EXIT_FAILURE);
+}
 
 // Writes the header of the .h file
 void write_header(FILE *outfile, char* filename, char* begin) {
@@ -26,13 +31,16 @@ void write_footer(FILE *outfile) {
 }
 
 // Reads a line and update the stack if it reads a { or a }
-void read_line(char* line, struct stack **stack, int i) {
+void read_line(char* line, int* par_count, int i) {
     char previous = '/';
     while (line[i] != '\0') {
+        if (*par_count < 0) {
+            error_message_brackets();
+        }
         if (line[i] == '{')
-            push_value(stack, true);
+            *par_count += 1;
         else if (line[i] == '}')
-            push_value(stack, false);
+            *par_count -= 1;
         if (previous == '/' && (line[i] == '/' || line[i] == '*'))
             break;
         previous = line[i];
@@ -45,6 +53,7 @@ void copy_struct(FILE* infile, FILE *outfile) {
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
+    fprintf(outfile, "\n");
     while ((read = getline(&line, &len, infile)) != -1) {
         if (!strcmp(line, "}; */\n") || !strcmp(line, "};*/\n")) {
             // If we are at the end of the structure
@@ -59,7 +68,7 @@ void copy_struct(FILE* infile, FILE *outfile) {
 
 
 // Reads all the lines of the .c file
-void readlines(char* filename, struct stack *stack, FILE *outfile) {
+void readlines(char* filename, int par_count, FILE *outfile) {
     FILE * fp;
     char * line = NULL;
     size_t len = 0;
@@ -77,11 +86,13 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
         is_struct = is_struct || !strcmp(line, "/* [raw]\n");
         if (is_struct) {
             // If we have to copy the struct
-            assert (length(stack) == 0);
+            if (par_count != 0) {
+                error_message_brackets();
+            }
             copy_struct(fp, outfile);
             is_struct = false;
         } else {
-            previous_length = length(stack);
+            previous_length = par_count;
             i = 0;
             // Consumes spaces and tabs
             while (line[i] == ' ')
@@ -92,9 +103,9 @@ void readlines(char* filename, struct stack *stack, FILE *outfile) {
                 fprintf(outfile, "%s", line);
             // If the line is not a comment
             if (line[i] != '/')
-                read_line(line, &stack, i);
+                read_line(line, &par_count, i);
             // If this is a function's name
-            if (previous_length == 0 && length(stack) == 1) {
+            if (previous_length == 0 && par_count == 1) {
                 int j = 0;
                 // Copies all the line but the { and remplaces it with a ;
                 while (line[j] != '{') {
@@ -137,12 +148,15 @@ int main(int argc, char *argv[]) {
         write_header(outfile, basename(filename), "#define _");
 
         // Defining the empty stack
-        struct stack *stack = NULL;
+        int par_count = 0;
 
         // Reading all the lines of the .c file
-        readlines(cfile, stack, outfile);
+        readlines(cfile, par_count, outfile);
 
-        free_stack(stack);
+        // If the count of {} is invalid
+        if (par_count != 0) {
+            error_message_brackets();
+        }
 
         write_footer(outfile);
 
