@@ -6,6 +6,11 @@ Header file generator for C files
 
 This is a small tool to build a header file from a C file.
 
+## Installation (Nix)
+
+```bash
+nix-env -iA https://github.com/GuilloteauQ/HGen/tarball/master
+```
 
 ## Usage
 
