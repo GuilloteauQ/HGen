@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
     char* cfile;
     char* filename;
     if (argc <= 1) {
-        printf("Bad usage: ./hgen file.c file.h\n");
+        printf("Bad usage: %s [file.c] [file.h]\n", argv[0]);
         exit(1);
     }
 
