@@ -2,7 +2,7 @@
 with (import <nixpkgs>{});
 
 stdenv.mkDerivation {
-  pname = "HGen";
+  pname = "hgen";
   version = "1.0";
   src = ./.;
   buildInputs = [
