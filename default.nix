@@ -11,7 +11,8 @@ stdenv.mkDerivation {
   ];
   installPhase =''
     mkdir $out
+    mkdir $out/bin
     make
-    cp hgen $out
+    cp hgen $out/bin
   '';
 }
