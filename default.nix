@@ -7,6 +7,7 @@ let
     stdenv = pkgs.stdenv;
 in with pkgs; {
   hgen = stdenv.mkDerivation {
+    name = "hgen";
     pname = "hgen";
     version = "1.0";
     src = ./.;
